@@ -1,0 +1,37 @@
+#include<iostream>
+using namespace std;
+void quick_sort(int a[],int p,int r)
+{
+    if(p>=r)
+        return;
+    int star = p;
+    int end = r;
+    int temp;
+    bool flag = true;
+    while(star<end)
+    {
+        if(a[star]>a[end])
+        {
+            temp = a[end];
+            a[end] = a[star];
+            a[star] = temp;
+            flag = !flag;
+        }
+        if(flag)
+            end--;
+        else
+            star++;
+    }
+    quick_sort(a,p,star-1);
+    quick_sort(a,star+1,r);
+}
+/*
+test
+int main()
+{
+    int a[] = {12,123,21,43,54,3,65,65,654,74,33};
+    quick_sort(a,0,10);
+    for(int i=0;i<11;i++)
+        cout<<a[i]<<endl;
+}
+*/
