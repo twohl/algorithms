@@ -1,0 +1,67 @@
+#include<iostream>
+using namespace std;
+struct node
+{
+    double value;
+    int index;
+    node *next;
+};
+void bucket_sort(double a[],int n)
+{
+    node k;
+    k.index = 11;
+    k.value = 1;
+    node li[10];
+    for(int i=0;i<10;i++)
+        li[i].next = &k;
+    node *m;
+    node p[n];
+    for(int i=0;i<n;i++)
+    {
+        m = &p[i];
+        m->value = a[i];
+        m->index = int(a[i]*10);
+        m->next = &k;
+        node *l = &li[m->index];
+        while(l->next->index!=11)
+        {
+            if((m->value)<(l->next->value))
+            {
+                m->next = l->next;
+                l->next = m;
+                break;
+            }
+            l = l->next;
+            if(l->next->index == 11)
+            {
+                l->next = m;
+                break;
+            }
+        }
+        if(li[m->index].next->index == 11)
+            li[m->index].next = m;
+    }
+    int j = 0;
+    for(int i=0;i<10;i++)
+    {
+        if(j>=n)
+            break;
+        node *l = li[i].next;
+        while(l->index != 11)
+        {
+            a[j] = l->value;
+            l = l->next;
+            j++;
+        }
+    }
+}
+
+/*
+int main()
+{
+    double a[] = {0.12,0.44,0.45,0.89,0.87,0.66,0.13};
+    bucket_sort(a,7);
+    for(int i=0;i<7;i++)
+        cout<<a[i]<<endl;
+}
+*/
