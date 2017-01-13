@@ -1,0 +1,49 @@
+#include<iostream>
+using namespace std;
+int minnum(int a[],int n)
+{
+    int min = a[0];
+    for(int i=0;i<n;i++)
+    {
+        if(a[i]<min)
+            min = a[i];
+    }
+    return min;
+}
+int maxnum(int a[],int n)
+{
+    int max = a[0];
+    for(int i=0;i<n;i++)
+    {
+        if(a[i]>max)
+            max = a[i];
+    }
+    return max;
+}
+int *max_min(int a[],int n)
+{
+    int max = a[0];
+    int min = a[0];
+    for(int i=0;i<n;i++)
+    {
+        if(a[i]<min)
+            min = a[i];
+        else if(a[i]>max)
+            max = a[i];
+    }
+    int b[2];
+    b[0] =max;
+    b[1] = min;
+    return b;
+}/*
+test
+int main()
+{
+    int a[] = {123,22,11,3,2,113,32};
+    int *b = max_min(a,7);
+    cout<<b[0]<<endl;
+    cout<<b[1]<<endl;
+    cout<<minnum(a,7)<<endl;
+    cout<<maxnum(a,7)<<endl;
+}
+*/
