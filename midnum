@@ -1,0 +1,40 @@
+#include<iostream>
+using namespace std;
+int midnum(int a[],int p,int r,int i)
+{
+    if(p == r)
+        return a[p];
+    int j = p;
+    int k = r;
+    int temp;
+    bool flag = true;
+    while(j<k)
+    {
+        if(a[j]>a[k])
+        {
+            temp = a[j];
+            a[j] = a[k];
+            a[k] = temp;
+            flag = !flag;
+        }
+        if(flag)
+        {
+            k--;
+        }else
+        {
+            j++;
+        }
+    }
+    if(i == k)
+        return a[i];
+    else if(i < k)
+        return midnum(a,p,k-1,i);
+    else return midnum(a,k+1,r,i);
+}
+/*
+int main()
+{
+    int a[] = {12,32,54,15,77,86,4};
+    cout<<midnum(a,0,6,3);
+}
+*/
