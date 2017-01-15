@@ -1,0 +1,53 @@
+#include<iostream>
+using namespace std;
+class queue
+{
+public:
+    queue()
+    {
+        head = 0;
+        end = 0;
+        count = 0;
+    }
+    bool empty()
+    {
+        if(count == 0)
+            return true;
+        return false;
+    }
+    bool full()
+    {
+        if(count == 100)
+            return true;
+        return false;
+    }
+    void insert(int key)
+    {
+        if(!full())
+        {
+
+            a[end] = key;
+            end = (end+1)%100;
+            count++;
+        }else
+        cout<<"overflow!!"<<endl;
+    }
+    void remove()
+    {
+        if(!empty())
+        {
+            head++;
+            count--;
+        }else
+            cout<<"underflow!!"<<endl;
+    }
+    int gethead()
+    {
+        return a[head];
+    }
+private:
+    int a[100];
+    int head;
+    int end;
+    int count;
+};
