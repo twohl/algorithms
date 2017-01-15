@@ -1,0 +1,58 @@
+#include<iostream>
+using namespace std;
+class Stack
+{
+public:
+    Stack():top(0){};
+    bool empty()
+    {
+        if(top == 0)
+            return true;
+        return false;
+    }
+    bool full()
+    {
+        if(top == 100)
+            return true;
+        return false;
+    }
+    int gettop()
+    {
+        return a[top-1];
+    }
+    void push(int key)
+    {
+        if(full())
+        {
+            cout<<"overflow!!you can't push it in this stack"<<endl;
+        }else{
+            a[top] = key;
+            top++;
+        }
+    }
+    void pop()
+    {
+        if(empty())
+        {
+            cout<<"underflow!! There is nothing you can delete"<<endl;
+        }else{
+            top--;
+        }
+    }
+private:
+    int a[100];
+    int top;
+};
+/*
+int main()
+{
+    Stack s;
+    for(int i=0;i<10;i++)
+        s.push(i);
+    while(!s.empty())
+    {
+        cout<<s.gettop()<<endl;
+        s.pop();
+    }
+}
+*/
