@@ -1,0 +1,47 @@
+#include<iostream>
+using namespace std;
+struct node
+{
+    int key;
+    node *pre;
+    node *next;
+};
+node *NIL = new node;
+class List
+{
+public:
+    List()
+    {
+        head = NIL;
+    }
+    void insert(node *m)
+    {
+        m->next = head;
+        m->pre = NIL;
+        if(head != NIL)
+            head->pre = m;
+        head = m;
+    }
+    node *search(int k)
+    {
+        node *x = head;
+        while(x != NIL)
+        {
+            if(x->key == k)
+                break;
+            x = x->next;
+        }
+        return x;
+    }
+    void dele(node *x)
+    {
+        if(x->pre != NIL)
+            x->pre->next = x->next;
+        else head = x->next;
+        if(x->next != NIL)
+            x->next->pre = x->pre;
+    }
+    ~List(){}
+private:
+    node *head;
+};
