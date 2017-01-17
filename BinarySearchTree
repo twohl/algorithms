@@ -1,0 +1,102 @@
+#include<iostream>
+using namespace std;
+struct node
+{
+    int key;
+    node *father;
+    node *left;
+    node *right;
+};
+node *NIL = new node;
+class binary_search_tree
+{
+public:
+    binary_search_tree()
+    {
+        root = NIL;
+    }
+    void insert(int key)
+    {
+        node *x = root;
+        node *y = x;
+        node *z = new node;
+        z->key = key;
+        z->left = NIL;
+        z->right = NIL;
+        while(x != NIL)
+        {
+            y = x;
+            if(key > x->key)
+                x = x->right;
+            else x= x->left;
+        }
+        z->father = y;
+        if(y == NIL)
+            root = z;
+        else if(z->key>y->key)
+        {
+            y->right = z;
+        }else
+        {
+            y->left = z;
+        }
+    }
+    node *search(int key)
+    {
+        node *x = root;
+        while(x != NIL)
+        {
+            if(key>x->key)
+                x = x->right;
+            else if(key<x->key)
+                x= x->left;
+            else return x;
+        }
+        cout<<"it's a wrong key"<<endl;
+        return x;
+    }
+    void Delete(node *m)
+    {
+        node *x = m;
+        node *y;
+        if(x->right == NIL)
+        {
+            x->left->father = m->father;
+            y = x->left;
+        }else if(x->right->left == NIL)
+        {
+            x->right->father = m->father;
+            x->right->left = m->left;
+            y = x->right;
+        }else
+        {
+            while(x != NIL)
+            {
+                y = x;
+                x = x->left;
+            }
+            y->right->father = y->father;
+            y->father->left = y->right;
+            y->left = m->left;
+            y->right = m->right;
+            y->father = m->father;
+        }
+            if(m->father == NIL)
+            {
+                delete m;
+                return;
+            }
+            if(m->father->left == m)
+                m->father->left = y;
+            else m->father->right = y;
+            delete m;
+    }
+private:
+    node *root;
+};/*
+int main()
+{
+    binary_search_tree test;
+    test.insert(2);
+    test.Delete(test.search(2));
+}
