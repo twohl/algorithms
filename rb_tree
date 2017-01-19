@@ -1,0 +1,190 @@
+#include<iostream>
+using namespace std;
+struct node
+{
+    int key;
+    int color = 1;
+    node *p;
+    node *left;
+    node *right;
+};
+node *NIL = new node;
+class rb_tree
+{
+public:
+    rb_tree()
+    {
+        root = NIL;
+    }
+    void left_rotate(node *x)
+    {
+        node *y = x->right;
+        y->p = x->p;
+        if(x->p->left == x)
+            x->p->left = y;
+        else x->p->right = y;
+        x->p = y;
+        x->right = y->left;
+        y->left = x;
+    }
+    void right_rotate(node *x)
+    {
+        node *y = x->left;
+        y->p = x->p;
+        if(x->p->left == x)
+            x->p->left = y;
+        else x->p->right =y;
+        x->p = y;
+        x->left = y->right;
+        y->right = x;
+    }
+    void rb_insert_fixup(node *z)
+    {
+        while(z->p->color == 0)
+        {
+            if(z->p->p->left == z->p)
+            {
+                node *y = z->p->p->right;
+                if(y->color == 0)
+                {
+                    y->color = 1;
+                    z->p->color = 1;
+                    z->p->p->color = 0;
+                    z = z->p->p;
+                }else
+                {
+                    if(z->p->right == z)
+                    {
+                        z = z->p;
+                        left_rotate(z);
+                    }
+                    z->p->color = 1;
+                    z->p->p->color =0;
+                    right_rotate(z->p->p);
+                }else
+                {
+                    node *y = z->p->p->left;
+                    if(y->color == 0)
+                    {
+                        z->p->color = 1;
+                        y->color = 1;
+                        z->p->p->color = 0;
+                        z = z->p->p;
+                    }else
+                    {
+                        if(z->p->left == z)
+                        {
+                            z = z->p;
+                            right_rotate(z);
+                        }
+                        z->p->color = 0;
+                        z->p->p->color = 1;
+                        left_rotate(z->p->p);
+                    }
+                }
+            }
+        }
+        root->color = 1;
+    }
+    void rb_insert(int key)
+    {
+        node *x = root;
+        node *y;
+        node *k = new node;
+        k->left = NIL;
+        k->right = NIL;
+        k->key = key;
+        k->color = 0;
+        while(x != NIL)
+        {
+            y = x;
+            if(key<x->key)
+                x = x->left;
+            else x = x->right;
+        }
+        if(root == NIL)
+        {
+            root = k;
+            root->p = NIL;
+        }
+        else if(key<y->key)
+        {
+            y->left = k;
+            k->p = y;
+        }else
+        {
+            y->right = k;
+            k->p = y;
+        }
+        rb_insert_fixup(k);
+    }
+    void rb_delete(node *x)
+    {
+        node *w;
+        while(x!=root&&x->color == 1)
+        {
+            if(x->p->left == x)
+            {
+                w = x->p->right;
+                if(w->color == 0)
+                {
+                    w->color = 1;
+                    x->p->color = 0;
+                    left_rotate(x->p);
+                    w = x->p->right;
+                }
+                if(w->right->color == 1&&w->left->color ==1)
+                {
+                    w->color == 0;
+                    x = x->p;
+                }else
+                {
+                    if(w->right->color == 1)
+                    {
+                        w->left->color = 1;
+                        w->color = 0;
+                        right_rotate(w);
+                        w = x->p->right;
+                    }
+                    w->color = x->p->color;
+                    x->p->color = 1;
+                    w->right->color = 1;
+                    left_rotate(x->p);
+                    x = root;
+                }
+            }else
+            {
+                w = x->p->left;
+                if(w->color == 0)
+                {
+                    w->color = 1;
+                    x->p->color = 0;
+                    right_rotate(x->p);
+                    w = x->p->left;
+                }
+                if(w->left->color == 1&&w->right->color == 1)
+                {
+                    w->color = 0;
+                    x = x->p;
+                }else
+                {
+                    if(w->left->color == 1)
+                    {
+                        w->right->color = 1;
+                        w->color = 0;
+                        left_rotate(w);
+                        w = x->p->left;
+                    }
+                    x->p->color = 1;
+                    w->left->color = 1;
+                    w->color = 0;
+                    right_rotate(x->p);
+                    x = root;
+                }
+            }
+        }
+    x->color = 1;
+    }
+private:
+    node *root;
+};
