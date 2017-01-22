@@ -1,0 +1,60 @@
+#include<iostream>
+using namespace std;
+char b[100][100];
+int c[100][100];
+void lcs_length(char x[],char y[],int m,int n)
+{
+    for(int i=0;i<m;i++)
+        for(int j=0;j<n;j++)
+            c[i][j] = 0;
+    for(int i=1;i<m;i++)
+    {
+        for(int j=1;j<n;j++)
+        {
+            if(x[i] == y[j])
+            {
+                c[i][j] = c[i-1][j-1] + 1;
+                b[i][j] = 'm';
+            }else if(c[i][j-1] < c[i-1][j])
+            {
+                c[i][j] = c[i-1][j];
+                b[i][j] = 'u';
+            }else{
+                c[i][j] = c[i][j-1];
+                b[i][j] = 'r';
+            }
+        }
+    }
+}
+void print_lcs(char x[],int m,int n)
+{
+    if(m == 0||n == 0)
+    {
+        cout<<x[m];
+        return;
+    }
+    if(b[m][n] == 'm')
+    {
+        print_lcs(x,m-1,n-1);
+        cout<<x[m];
+    }
+    else if(b[m][n] == 'u')
+        print_lcs(x,m-1,n);
+    else print_lcs(x,m,n-1);
+}
+/*
+int main()
+{
+    char x[] = "123412341234";
+    int m = 12;
+    char y[] = "1234441234123";
+    int n = 13;
+    lcs_length(x,y,m,n);
+    for(int i=1;i<m;i++)
+        {for(int j=1;j<n;j++)
+            cout<<b[i][j];
+            cout<<endl;
+        }
+    print_lcs(x,m-1,n-1);
+}
+*/
