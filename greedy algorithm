@@ -1,0 +1,44 @@
+#include<iostream>
+using namespace std;
+struct active
+{
+    int start;
+    int end;
+};
+//use insert sort sort active
+void active_sort(active ac[],int n)
+{
+    for(int i=1;i<n;i++)
+    {
+        active temp;
+        temp.start = ac[i].start;
+        temp.end = ac[i].end;
+        for(int j=i-1;j>=0;j--)
+        {
+            if(temp.end<ac[j].end)
+            {
+                ac[j+1].start = ac[j].start;
+                ac[j+1].end = ac[j].end;
+            }else
+            {
+                ac[j+1].start = temp.start;
+                ac[j+1].end = temp.end;
+                break;
+            }
+        }
+    }
+}
+int recursive_activity_selector(active ac[],int s[],int n)
+{
+    active_sort(ac,n);
+    int j=0;
+    s[0] = 0;
+    for(int i=1;i<n;i++)
+    {
+        if(ac[s[j]].end<a[i].start)
+        {
+            s[j++] = i;
+        }
+    }
+    return j;
+}
