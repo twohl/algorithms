@@ -5,12 +5,16 @@ struct node
     int key[5];
     node *c[6];
     int n = 0;
-    bool leaf; 
+    bool leaf = true;
 };
 node *NIL = new node;
 class B_tree
 {
 public:
+    B_tree()
+    {
+        root = new node;
+    }
     node B_tree_search(int k)
     {
         node *x = root;
@@ -35,7 +39,7 @@ public:
                 }
             }
         }
-        
+
     }
     void B_tree_split_child(node *x,int i)
     {
@@ -103,24 +107,122 @@ public:
             B_tree_split_child(s,0);
             B_tree_insert_nonfull(s,k);
         }else B_tree_insert_nonfull(r,k);
-        
+
     }
-    void B_tree_delete(int k)
+    void xxx(node *r,int i)
     {
-        node *r = root;
-        for(int i=0;i<r->n;i++)
+        if(i+1<=r->n&&r->c[i+1]->n>=3)
         {
-            if(k == r->key[i])
+            r->c[i]->key[2] = r->key[i];
+            r->c[i]->c[3] = r->c[i+1]->c[0];
+            r->c[i]->n++;
+            r->key[i] = r->c[i+1]->key[0];
+            for(int j=0;j<r->c[i+1]->n-1;j++)
+                r->c[i+1]->key[j] = r->c[i+1]->key[j+1];
+            for(int j=0;j<r->c[i+1];j++)
+                r->c[i+1]->c[j] = r->c[i+1]->c[j+1];
+            r->c[i+1]->n--;
+            r = r->c[i];
+        }else if(i-1>=0&&r->c[i-1]->n>=3)
+        {
+            for(int j=2;j>0;j--)
             {
-                
-            }else if(k<r->key[i])
+                r->c[i]->key[j] = r->c[i]->key[j-1];
+            }
+            r->c[i]->key[0] = r->key[i-1];
+            r->c[i]->c[0] = r->c[i-1]->c[r->c[i-1]->n];
+            r->key[i-1] = r->c[i-1]->key[r->c[i-1]->n-1];
+            r->c[i-1]->n--;
+            r->c[i]->n++;
+            r = r->c[i];
+            
+        }else{
+            if(i+1<= r->n)
             {
-                if(r->c[i]->n < 3)
+                r->c[i]->key[2] = r->key[i];
+                for(int j=0;j<2;j++)
                 {
-                    //写一个保证每个节点都至少有3个值的函数
+                    r->c[i]->key[3+j] = r->c[i+1]->key[j];
+                }
+                for(int j=0;j<3;j++)
+                {
+                    r->c[i]->c[3+j] = r->c[i+1]->c[j];
+                }
+                r->c[i]->n = 5;
+                for(int j=i;j<r->n-1;j++)
+                {
+                    r->key[j] = r->key[j+1];
+                }
+                for(int j=i+1;j<r->n;j++)
+                {
+                    r->c[j] = r->c[j+1];
+                }
+                r->n = r->n-1;
+                if(r->n == 0)
+                {
+                    root = r->c[0];
+                }
+                r = r->c[i];
+            }else{
+                r->c[i-1]->key[2] = r->key[i-1];
+                for(int j=0;j<2;j++)
+                {
+                    r->c[i-1]->key[3+j] = r->c[i]->key[j];
+                }
+                for(int j=0;j<3;j++)
+                {
+                    r->c[i-1]->c[3+j] = r->c[i]->c[j];
+                }
+                r->c[i-1]->n = 5;
+                for(int j=i;j<r->n;j++)
+                {
+                    r->key[j-1] = r->key[j];
+                }
+                for(int j=i;j<r->n;j++)
+                {
+                    r->c[j] = r->c[j+!];
+                }
+                r->n = r->n-1;
+                r = r->c[i-1];
+            }
+        }
+    }
+    void B_tree_delete(node *r,int k)
+    {
+        if(r->leaf)
+        {
+            int i=0;
+            while(i<r->n&&k!= r->key[i])
+                i++;
+            if(i!= r->n)
+            {
+                for(int j=i;j<r->n-1;j++)
+                    r->key[j] = r->key[j+1];
+                r->n--;
+            }
+        }else{
+            for(int i=0;i<r->n;i++)
+            {
+                if(r->key[i] == k)
+                {
+                    node *x = r;
+                    while(!x->leaf)
+                    {
+                        xxx(x->c[i+1],0);
+                    }
+                    r->key[i] = x->key[0];
+                    for(int j=0;j<x->n;j++)
+                        x->key[j] = x->key[j+1];
+                    x->n--;
+                    return;
+                }else if(k<r->key[i]){
+                    xxx(r,i);
+                    B_tree_delete(r,k);
+                    return;
                 }
             }
         }
+        
     }
 private:
     node *root;
