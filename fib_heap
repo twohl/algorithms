@@ -1,0 +1,163 @@
+#include<iostream>
+using namespace std;
+struct node
+{
+    int key;
+    int degree;
+    bool mark;
+    node *left;
+    node *right;
+    node *child;
+    node *p;
+};
+node *NIL = new node;
+class Fib_heap
+{
+public:
+    Fib_heap()
+    {
+        min = NIL;
+        n = 0;
+    }
+    Fib_heap make_fib_heap()
+    {
+        Fib_heap h;
+        h.n = 0;
+        h.min = NIL;
+        return h;
+    }
+    void Fib_heap_insert(int x)
+    {
+        node *m = new node;
+        m->key = x;
+        m->degree = 0;
+        m->mark = false;
+        m->p = NIL;
+        if(min == NIL)
+        {
+            min = m;
+            m->left = m;
+            m->right = m;
+        }else
+        {
+            m->right = min;
+            m->left = min->left;
+            min->left->right = m;
+            min->left = m;
+        }
+        if(m->key<min->key)
+            min = m;
+        n++;
+    }
+    node *fib_heap_minimum()
+    {
+        return min;
+    }
+    void fib_heap_union(Fib_heap &H)
+    {
+        if(min == NIL)
+        {
+            min = H.min;
+        }else{
+            min->left->right = H.min->right;
+            H.min->right->left = min->left;
+            H.min->right = min;
+            min->left = H.min;
+            n = n+H.n;
+            if(H.min->key<min->key)
+                min = H.min;
+        }
+    }
+    void consolidate()
+    {
+        node *a[100];
+        for(int i=0;i<10;i++)
+            a[i] = NIL;
+        node *x = min;
+        while(x!=min)
+        {
+            int d = x->degree;
+            node *y;
+            while(a[d]!=NIL)
+            {
+                y = a[d];
+                if(x->key>y->key)
+                {
+                    y->right->left = y->left;
+                    y->left->right = y->right;
+                    y->left = x->left;
+                    y->right = x->right;
+                    x->left->right = y;
+                    x->right->left = y;
+                    if(y->degree == 0)
+                    {
+                        x->right = x;
+                        x->left = x;
+                        y->child = x;
+                    }else{
+                        x->right = y->child;
+                        x->left = y->child->left;
+                        y->child->left->right = x;
+                        y->child->left = x;
+                    }
+                    x->p = y;
+                    y->degree++;
+                    x = y;
+                }else{
+                    if(x->degree == 0)
+                    {
+                        x->child = y;
+                    }else{
+                        y->right = x->child;
+                        y->left = x->child->left;
+                        x->child->left->right = y;
+                        x->child->left = y;
+                    }
+                    y->p = x;
+                    x->degree++;
+                }
+                a[d] = NIL;
+                d++;
+            }
+            a[d] = x;
+        }
+        min = a[0];
+        for(int i=1;i<10;i++)
+        {
+            if(a[i]->key<min->key)
+                min = a[i];
+        }
+    }
+    node *fib_heap_extract_min()
+    {
+        node *x = min->child;
+        node *y;
+        for(int i=0;i<min->degree;i++)
+        {
+            x = y->right;
+            y->left->right = y->right;
+            y->right->left = y->left;
+            y->right = min;
+            y->left = min->left;
+            min->left->right = y;
+            min->left = y;
+            y->p = NIL;
+            y = x;
+        }
+        x = min;
+        min->right->left = min->left;
+        min->left->right = min->right;
+        if(min->right == min)
+        {
+            min = NIL;
+        }else{
+            min = min->right;
+            consolidate();
+        }
+        n--;
+        return x;
+    }
+private:
+    node *min;
+    int n;
+};
