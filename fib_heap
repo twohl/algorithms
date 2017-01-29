@@ -157,6 +157,54 @@ public:
         n--;
         return x;
     }
+    void cut(node*x,node*y)
+    {
+        x->left->rihgt = x->rihgt;
+        x->right->left = x->left;
+        y->degree--;
+        x->right = min;
+        x->left = min->left;
+        min->left->right = x;
+        min->left = x;
+        x->p = NIL;
+        x->mark = false;
+    }
+    void cascading_cut(node *y)
+    {
+        node *z = y->p;
+        if(z!=NIL)
+        {
+            if(y->mark == false)
+            {
+                y->mark = true;
+            }else{
+                cut(y,z);
+                cascading_cut(z);
+            }
+        }
+    }
+    void fib_heap_decrease_key(node x,int k)
+    {
+        if(k>x->key)
+        {
+            cout<<"error:new key is greater than current key"<<endl;
+            return;
+        }
+        x->key = k;
+        node *y = x->p;
+        if(y != NIL&&x->key<y->key)
+        {
+            cut(x,y);
+            cascading_cut(y);
+        }
+        if(x->key<min->key)
+            min = x;
+    }
+    void fib_heap_delete(node *x)
+    {
+        fib_heap_decrease_key(x,-100);
+        fib_heap_extract_min();
+    }
 private:
     node *min;
     int n;
