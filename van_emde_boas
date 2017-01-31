@@ -1,0 +1,92 @@
+#include<iostream>
+using namespace std;
+struct proto_vEB
+{
+    int u;
+    proto_vEB *summary;
+    proto_vEB *cluster;
+    int a[2]={0,0};
+};
+proto_vEB *NIL = new proto_vEB;
+class van_emde_boas
+{
+public:
+    van_emde_boas(int n)
+    {
+        root = new proto_vEB;
+        build(root,n);
+    }
+    void build(proto_vEB *x,int n)
+    {
+        if(n == 2)
+            return;
+        int m = int(sqrt(n));
+        x->u = n;
+        x->summary = new proto_vEB;
+        x->cluster = new proto_vEB[m];
+        build(x->summary,m);
+        for(int i=0;i<m;i++)
+            build(x->cluster[i],m);
+
+    }
+    bool proto_vEB_member(proto_vEB *v,int x)
+    {
+        if(v->u == 2)
+            return v->a[x];
+        else {
+            int m;
+            int n;
+            m = int(sqrt(v->u));
+            n = x%m;
+            m = x/m;
+            proto_vEB_member(x->cluster[m],n);
+        }
+    }
+    int proto_vEB_minimum(proto_vEB *v)
+    {
+        if(v->u == 2)
+        {
+            if(v->a[0] == 1)
+                return 0;
+            else if(v->a[1] == 1)
+                return 1;
+            else return -1;
+        }else{
+            int min_cluster = proto_vEB_minimum(v->summary);
+            if(min_cluster == -1)
+                return -1;
+            else{
+                int offset = proto_vEB_minimum(v->cluster[min_cluster]);
+                return ((v->summary->u)*mincluster+offset);
+            }
+        }
+    }
+    int proto_vEB_successor(proto_vEB *v,int x)
+    {
+        if(v->u == 2)
+        {
+            if(x == 0&&a[1] == 1)
+                return 1;
+            return -1;
+        }else{
+            int m = x%v->summary->u;
+            int n = int(x/v->summary->u);
+            int offset = proto_vEB_successor(v->cluster[n],m);
+            if(offset != -1)
+                return n*v->summary->u+offset;
+            else{
+                int succ_cluster = proto_vEB_successor(v->summary,n);
+                if(succ_cluster != -1)
+                {
+                    offset = proto_vEB_minimum(v->cluster[succ_cluster]);
+                    return succ_cluster*v->summary->u+offset;
+                }else{
+                    return -1;
+                }
+                
+            }
+        }
+    }
+private:
+    proto_vEB *root;
+};
