@@ -1,0 +1,97 @@
+#include<iostream>
+using namespace std;
+struct node
+{
+    char key;
+    int d = -1;
+    int f = -1;
+    int color = -1;
+    node *pi;
+};
+class Graph
+{
+public:
+    void BFS()
+    {
+        int li[10];
+        int k = 0;
+        int j = 0;
+        int m = 0;
+        while(k<=j)
+        {
+            for(int i=0;i<10;i++)
+            {
+                if(graph[m][i] == 1&&v[i].color != 1)
+                {
+                    v[i].d = v[m].d+1;
+                    v[i].color = 1;
+                    for(int w = 0;w<10;w++)
+                    {
+                        if(graph[i][w] == 1&&v[w].color == -1)
+                        {
+                            v[w].color = 0;
+                            li[j] = i;
+                            j++;
+                        }
+                    }
+                }
+                    
+            }
+            m = li[k];
+            k++;
+        }
+    }
+    void Shortest()
+    {
+        int li[10];
+        int k = 0;
+        int j = 0;
+        int m = 0;
+        while(k<=j)
+        {
+            for(int i=0;i<10;i++)
+            {
+                if(graph[m][i] == 1&&v[i].color != 1)
+                {
+                    if(v[i].d>v[m].d)
+                        v[i].d = v[m].d+1;
+                    v[i].color = 1;
+                    for(int w = 0;w<10;w++)
+                    {
+                        if(graph[i][w] == 1&&v[w].color == -1)
+                        {
+                            v[w].color = 0;
+                            li[j] = i;
+                            j++;
+                        }
+                    }
+                }
+                    
+            }
+            m = li[k];
+            k++;
+        }
+    }
+    void DFS_visit(int u,int &time)
+    {
+        time++;
+        v[u].d = time;
+        v[u].color = 0;
+        for(int i=0;i<10;i++)
+            if(graph[u][i]==1&&v[i].color == -1)
+                DFS_visit(i,time);
+        time++;
+        v[u].f = time;
+        v[u].color = 1;
+    }
+    void DFS()
+    {
+        int time = 0;
+        for(int i=0;i<10;i++)
+            if(v[i].color == -1)
+                DFS_visit(i,time);
+    }
+private:
+    node v[10];
+    int graph[10][10];
+};
